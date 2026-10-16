@@ -1,0 +1,119 @@
+
+/* Register and Login Page Design */
+
+.auth-body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #e8efff, #f8faff);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 35px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 15px 45px rgba(25, 53, 100, 0.12);
+}
+
+.auth-brand {
+    display: block;
+    margin-bottom: 25px;
+    color: #4263eb;
+    font-size: 23px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.auth-card h1 {
+    margin-bottom: 10px;
+    color: #192b49;
+    font-size: 28px;
+}
+
+.auth-card p {
+    color: #78869b;
+    line-height: 1.6;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 25px;
+}
+
+.auth-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #293b57;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 13px;
+    box-sizing: border-box;
+    border: 1px solid #dce3ef;
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+.auth-form input:focus {
+    outline: 2px solid #cbd6ff;
+    border-color: #4263eb;
+}
+
+.primary-btn {
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    background: #4263eb;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #304fc9;
+}
+
+.full {
+    width: 100%;
+}
+
+.auth-foot {
+    margin-top: 22px;
+    text-align: center;
+    color: #78869b;
+    font-size: 14px;
+}
+
+.auth-foot a {
+    color: #4263eb;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.flash {
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 8px;
+    background: #fff0f0;
+    color: #b42318;
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 24px;
+    }
+}

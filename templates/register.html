@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | CloudStore</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #edf3ff, #f7f9ff);
+            color: #172b4d;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 460px;
+            padding: 35px;
+            background: #fff;
+            border: 1px solid #e4eaf5;
+            border-radius: 22px;
+            box-shadow: 0 18px 55px rgba(30, 55, 100, .12);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-size: 25px;
+            font-weight: 800;
+            color: #172b4d;
+        }
+
+        .brand span { color: #4164ed; font-size: 35px; }
+
+        h1 { margin: 0 0 10px; font-size: 28px; }
+
+        .subtitle {
+            margin-bottom: 25px;
+            color: #8390a5;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .messages { margin-bottom: 16px; }
+
+        .message {
+            padding: 12px;
+            border-radius: 9px;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .danger { background: #fff0f0; color: #b42332; }
+        .warning { background: #fff7df; color: #8a6500; }
+        .success { background: #e7f8ee; color: #087a4b; }
+
+        form { display: grid; gap: 16px; }
+
+        label {
+            display: grid;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #dfe6f1;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #4164ed;
+            box-shadow: 0 0 0 3px #4164ed18;
+        }
+
+        .hint {
+            margin-top: -8px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #8390a5;
+        }
+
+        .submit-btn {
+            margin-top: 5px;
+            padding: 15px;
+            border: 0;
+            border-radius: 10px;
+            background: #4164ed;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover { background: #2f50d5; }
+
+        .footer {
+            margin-top: 23px;
+            text-align: center;
+            font-size: 13px;
+            color: #7c899d;
+        }
+
+        .footer a {
+            color: #4164ed;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .security {
+            margin-top: 23px;
+            padding-top: 17px;
+            border-top: 1px solid #edf0f6;
+            text-align: center;
+            color: #8390a5;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .register-card { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="register-card">
+        <div class="brand"><span>☁</span> CloudStore</div>
+
+        <h1>Create your account</h1>
+        <p class="subtitle">
+            Register to upload, organize and securely manage your cloud files.
+        </p>
+
+        <div class="messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+        </div>
+
+        <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+            <label for="name">Full Name
+                <input id="name" type="text" name="name"
+                       placeholder="Enter your full name"
+                       maxlength="100" autocomplete="name" required>
+            </label>
+
+            <label for="email">Email Address
+                <input id="email" type="email" name="email"
+                       placeholder="you@example.com"
+                       autocomplete="email" required>
+            </label>
+
+            <label for="password">Password
+                <input id="password" type="password" name="password"
+                       placeholder="Create a strong password"
+                       minlength="8" autocomplete="new-password" required>
+            </label>
+
+            <div class="hint">
+                Minimum 8 characters, including uppercase, lowercase,
+                a number and a special symbol.
+            </div>
+
+            <label for="confirmPassword">Confirm Password
+                <input id="confirmPassword" type="password"
+                       placeholder="Enter password again"
+                       minlength="8" autocomplete="new-password" required>
+            </label>
+
+            <div id="passwordMessage" class="hint" aria-live="polite"></div>
+
+            <button class="submit-btn" type="submit">
+                Create Account →
+            </button>
+        </form>
+
+        <div class="footer">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Sign in</a>
+        </div>
+
+        <div class="security">🔒 Secure access to your cloud workspace</div>
+    </main>
+
+    <script>
+        const form = document.getElementById("registerForm");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const message = document.getElementById("passwordMessage");
+
+        function validatePasswords() {
+            if (confirmPassword.value && password.value !== confirmPassword.value) {
+                message.textContent = "Passwords do not match.";
+                message.style.color = "#b42332";
+                confirmPassword.setCustomValidity("Passwords do not match.");
+            } else {
+                message.textContent = confirmPassword.value ? "Passwords match." : "";
+                message.style.color = "#087a4b";
+                confirmPassword.setCustomValidity("");
+            }
+        }
+
+        password.addEventListener("input", validatePasswords);
+        confirmPassword.addEventListener("input", validatePasswords);
+
+        form.addEventListener("submit", function(event) {
+            validatePasswords();
+            if (password.value !== confirmPassword.value) {
+                event.preventDefault();
+                confirmPassword.reportValidity();
+            }
+        });
+    </script>
+</body>
+</html>

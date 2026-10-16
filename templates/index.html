@@ -1,177 +1,179 @@
+{% extends "base.html" %}
 
-cat > templates/index.html <<'EOF'
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cloud Based File Storage System</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-<div class="app">
-<aside class="sidebar">
-  <h2 class="brand">☁ CloudStore</h2>
-  <p class="menu-label">WORKSPACE</p>
-  <a class="nav active" href="/">▦ Dashboard</a>
-  <a class="nav" href="#myfiles">▤ My Files</a>
-  <a class="nav" href="#upload">↑ Upload Files</a>
-  <a class="nav" href="#folders">▰ My Folders</a>
-  <a class="nav" href="#shared">♧ Shared Files</a>
-  <a class="nav" href="#recent">◷ Recent Files</a>
-  <a class="nav" href="#trash">♲ Recycle Bin</a>
-  <p class="menu-label">ACCOUNT</p>
-  <a class="nav" href="#profile">♙ My Profile</a>
-  <div class="side-bottom">
-    <div class="cloud-box">
-      <div class="cloud-big">☁</div>
-      <strong>Cloud Storage</strong>
-      <p>Manage your files securely.</p>
-      <div class="progress"><span></span></div>
-      <small>1.2 GB of 10 GB used</small>
+{% block title %}Dashboard | CloudStore{% endblock %}
+{% block page_heading %}Dashboard{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div>
+        <small>CLOUD FILE MANAGEMENT</small>
+        <h1>Everything you need,<br>in one secure place.</h1>
+        <p>Upload, organize and access your files from anywhere.</p>
+        <a href="#upload" class="btn btn-white">↑ Upload a file</a>
     </div>
-    <a class="nav" href="/logout">↪ Logout</a>
-  </div>
-</aside>
-
-<main class="main">
-<header class="topbar">
-  <div>
-    <p class="eyebrow">YOUR CLOUD WORKSPACE</p>
-    <h1>Dashboard</h1>
-    <p class="sub">Welcome back! Manage your files in one place.</p>
-  </div>
-  <div class="top-right">
-    <input type="search" id="search" placeholder="⌕ Search your files...">
-    <div class="avatar">U</div>
-  </div>
-</header>
-
-<section class="welcome">
-  <div>
-    <span class="welcome-tag">YOUR FILES, ANYWHERE</span>
-    <h2>Everything you need,<br>in one secure place.</h2>
-    <p>Upload, organize and access your files from anywhere.</p>
-    <button class="btn white" onclick="document.getElementById('fileInput').click()">↑ &nbsp; Upload a file</button>
-  </div>
-  <div class="hero-art">☁<span>↑</span></div>
-</section>
-
-<section class="stats">
-  <article class="stat-card">
-    <div class="stat-icon icon-blue">▤</div>
-    <p>Total Files</p><h2 id="totalFiles">{{ total_files|default(0) }}</h2>
-    <small>Files in your workspace</small>
-  </article>
-  <article class="stat-card">
-    <div class="stat-icon icon-purple">▰</div>
-    <p>Total Folders</p><h2 id="totalFolders">{{ total_folders|default(0) }}</h2>
-    <small>Your organized folders</small>
-  </article>
-  <article class="stat-card">
-    <div class="stat-icon icon-green">☁</div>
-    <p>Storage Used</p><h2 id="storageUsed">0 MB</h2>
-    <small>Cloud storage consumption</small>
-  </article>
-  <article class="stat-card">
-    <div class="stat-icon icon-orange">↥</div>
-    <p>Storage Status</p><h2 class="ready">Ready</h2>
-    <small>Manage your cloud files</small>
-  </article>
-</section>
-
-<section class="grid">
-  <article class="panel upload-panel" id="upload">
-    <div class="panel-head"><div><h3>Upload Files</h3><p>Add files to your workspace</p></div><span class="head-icon">↑</span></div>
-    <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
-      <label class="dropzone" for="fileInput">
-        <span class="upload-symbol">↑</span>
-        <strong>Choose a file to upload</strong>
-        <span>Click here to browse your computer</span>
-        <small>Maximum file size depends on server configuration</small>
-      </label>
-      <input type="file" id="fileInput" name="file" required hidden>
-      <p id="fileName" class="filename">No file selected</p>
-      <button class="btn primary full" type="submit">Upload to Cloud →</button>
-    </form>
-  </article>
-
-  <article class="panel" id="folders">
-    <div class="panel-head"><div><h3>My Folders</h3><p>Keep everything organized</p></div><span class="head-icon purple-text">▰</span></div>
-    <form action="/create-folder" method="POST" class="folder-form">
-      <input type="text" name="name" placeholder="New folder name" maxlength="100" required>
-      <button class="btn primary" type="submit">+ Create</button>
-    </form>
-    <div class="folder-list">
-      {% for folder in folders|default([]) %}
-      <div class="folder-row"><span class="folder-icon">▰</span><span>{{ folder.name }}</span><span class="folder-arrow">›</span></div>
-      {% else %}
-      <div class="empty-small">Your folders will appear here.</div>
-      {% endfor %}
+    <div class="hero-art">
+        <div class="hero-cloud">☁</div>
+        <div class="floating-card">📄 PDF</div>
+        <div class="floating-card second">📝 DOC</div>
     </div>
-  </article>
-</section>
-<section class="panel files-panel" id="myfiles">
-  <div class="panel-head">
-    <div><h3>My Files</h3><p>View and manage your uploaded files</p></div>
-    <a href="/files" class="text-link">View all files →</a>
-
-  </div>
-  <div class="filters">
-
-    <button class="filter active" data-filter="all">All Files</button>
-
-    <button class="filter" data-filter="pdf">Documents</button>
-    <button class="filter" data-filter="image">Images</button>
-
-    <button class="filter" data-filter="video">Videos</button>
-
-  </div>
-
-  <div class="table-wrap">
-
-    <table>
-      <thead><tr><th>FILE NAME</th><th>FILE TYPE</th><th>SIZE</th><th>DATE ADDED</th><th>ACTIONS</th></tr></thead>
-      <tbody id="fileTable">
-
-      {% for file in files|default([]) %}
-
-      <tr data-name="{{ file.original_name|lower }}" data-type="{{ file.original_name.rsplit('.', 1)[-1]|lower if '.' in file.original_name else '' }}">
-        <td><span class="file-icon">▤</span><strong>{{ file.original_name }}</strong></td>
-
-        <td>{{ file.original_name.rsplit('.', 1)[-1]|upper if '.' in file.original_name else 'FILE' }}</td>
-        <td>{{ (file.size / 1024)|round(1) }} KB</td>
-
-        <td>{{ file.created_at[:10] }}</td>
-        <td class="actions">
-
-          <a href="/download/{{ file.id }}" title="Download">↓</a>
-          <form action="/delete/{{ file.id }}" method="POST" onsubmit="return confirm('Move this file to Recycle Bin?')">
-
-            <button title="Delete" type="submit">×</button>
-          </form>
-        </td>
-      </tr>
-      {% else %}
-      <tr id="emptyRow"><td colspan="5" class="empty-table">☁<br><strong>No files yet</strong><br>Upload your first file to see it here.</td></tr>
-
-      {% endfor %}
-      </tbody>
-
-    </table>
-  </div>
 </section>
 
-<section class="panel bottom-panel" id="shared">
-
-  <div><span class="bottom-icon">♧</span><div><h3>Shared Files</h3><p>Sharing features can be added here.</p></div></div>
-  <span class="coming">Ready to configure</span>
-</section>
-
-<footer>Cloud Based File Storage System <span>Secure storage · Simple management</span></footer>
-</main>
+<div class="section-heading">
+    <div>
+        <small>OVERVIEW</small>
+        <h2>Your workspace at a glance</h2>
+    </div>
+    <span class="ready-pill">● Workspace Ready</span>
 </div>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
-</html>
-EOF
+
+<section class="stats-grid">
+    <article class="stat-card">
+        <div class="stat-icon blue">▤</div>
+        <p>Total Files</p>
+        <h2>{{ stats['total_files'] if stats else 0 }}</h2>
+        <small>Files in your workspace</small>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-icon purple">▰</div>
+        <p>My Folders</p>
+        <h2>{{ folders_count or 0 }}</h2>
+        <small>Organize your documents</small>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-icon green">☁</div>
+        <p>Storage Used</p>
+        <h2>{{ '%.1f'|format((stats['total_bytes'] or 0) / 1073741824) }} <small>GB</small></h2>
+        <small>Based on uploaded files</small>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-icon orange">✓</div>
+        <p>Storage Status</p>
+        <h2 class="ready-text">Ready</h2>
+        <small>Your workspace is available</small>
+    </article>
+</section>
+
+<section class="content-grid">
+
+    <article class="panel" id="upload">
+        <div class="panel-heading">
+            <div>
+                <small>ADD NEW CONTENT</small>
+                <h2>Upload Files</h2>
+                <p>Add files to your workspace</p>
+            </div>
+            <span class="panel-icon">↑</span>
+        </div>
+
+        <form action="{{ url_for('upload') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <label class="upload-area" for="file-input">
+                <span class="upload-symbol">↑</span>
+                <strong>Choose a file to upload</strong>
+                <span>Browse your computer to select a file</span>
+                <small>Maximum file size: 50 MB</small>
+                <input type="file" name="file" id="file-input" required>
+            </label>
+
+            <button type="submit" class="btn btn-primary full-width">
+                ↑ Upload to CloudStore
+            </button>
+        </form>
+    </article>
+
+    <article class="panel" id="folders">
+        <div class="panel-heading">
+            <div>
+                <small>STAY ORGANIZED</small>
+                <h2>My Folders</h2>
+                <p>Keep everything organized</p>
+            </div>
+            <span class="panel-icon purple-icon">▰</span>
+        </div>
+
+        <form action="{{ url_for('create_folder') }}"
+              method="POST"
+              class="folder-form">
+            <label for="folder-name">Create a new folder</label>
+            <div class="folder-input">
+                <input type="text" id="folder-name" name="name"
+                       placeholder="e.g. College Documents" required>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </form>
+
+        <div class="folder-list">
+            {% if folders %}
+                {% for folder in folders %}
+                    <div class="folder-row">
+                        <span class="folder-symbol">▰</span>
+                        <strong>{{ folder['name'] }}</strong>
+                        <span class="arrow">›</span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-message">
+                    No folders yet. Create your first folder above.
+                </p>
+            {% endif %}
+        </div>
+    </article>
+
+</section>
+
+<section class="panel recent-panel">
+    <div class="panel-heading recent-heading">
+        <div>
+            <small>YOUR FILES, ANYWHERE</small>
+            <h2>Recent Files</h2>
+            <p>Your latest uploaded documents</p>
+        </div>
+        <a href="{{ url_for('files_page') }}" class="view-all">View all files →</a>
+    </div>
+
+    {% if files %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>FILE NAME</th>
+                    <th>SIZE</th>
+                    <th>DATE ADDED</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td><span class="file-symbol">▤</span>
+                        {{ file['original_name'] }}</td>
+                    <td>{{ '%.1f'|format((file['size'] or 0)/1024) }} KB</td>
+                    <td>{{ file['created_at'][:10] if file['created_at'] else '—' }}</td>
+                    <td>
+                        <a class="download-link"
+                           href="{{ url_for('download', file_id=file['id']) }}">
+                           Download
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-file">▤</div>
+        <strong>No files uploaded yet</strong>
+        <p>Upload your first file to see it listed here.</p>
+        <a href="#upload" class="btn btn-soft">Upload a file</a>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}

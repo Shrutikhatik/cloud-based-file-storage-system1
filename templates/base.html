@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}CloudStore{% endblock %}</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+{% if session.get('user_id') %}
+<div class="layout">
+
+    <aside class="sidebar">
+        <a class="brand" href="{{ url_for('dashboard') }}">
+            ☁ CloudStore
+        </a>
+
+        <p class="nav-heading">WORKSPACE</p>
+
+        <a class="nav-link active" href="{{ url_for('dashboard') }}">▦ Dashboard</a>
+        <a class="nav-link" href="{{ url_for('files_page') }}">▤ My Files</a>
+        <a class="nav-link" href="{{ url_for('dashboard') }}#upload">↑ Upload Files</a>
+        <a class="nav-link" href="{{ url_for('dashboard') }}#folders">▰ My Folders</a>
+        <a class="nav-link" href="{{ url_for('shared') }}">♧ Shared Files</a>
+        <a class="nav-link" href="{{ url_for('recycle_bin') }}">◷ Recycle Bin</a>
+
+        <p class="nav-heading">ACCOUNT</p>
+        <a class="nav-link" href="{{ url_for('profile') }}">♙ My Profile</a>
+        <a class="nav-link" href="{{ url_for('logout') }}">↪ Logout</a>
+
+        <div class="sidebar-bottom">
+            <div class="storage-box">
+                <div class="cloud-icon">☁</div>
+                <h3>Cloud Storage</h3>
+                <p>Manage your files securely.</p>
+                <div class="progress">
+                    <span></span>
+                </div>
+                <small>Your workspace is ready.</small>
+            </div>
+            <p class="online">● System Online</p>
+        </div>
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <div>
+                <small>YOUR CLOUD WORKSPACE</small>
+                <h2>{% block page_heading %}Dashboard{% endblock %}</h2>
+            </div>
+            <div class="user-info">
+                <span class="secure">✓ Secure workspace</span>
+                <span class="avatar">
+                    {{ session.get('user_name', 'U')[:1]|upper }}
+                </span>
+                <strong>{{ session.get('user_name', 'User') }}</strong>
+            </div>
+        </header>
+
+        <main class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+              {% endfor %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>CloudStore · Secure file workspace</footer>
+    </div>
+</div>
+
+{% else %}
+<main class="auth-page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block auth_content %}{% endblock %}
+</main>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
